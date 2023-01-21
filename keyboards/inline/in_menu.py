@@ -11,80 +11,36 @@ async def in_menu_back():
     return keyboard
 
 
-async def in_menu_get_room():
+async def in_menu_get_floor(floor=''):
     keyboard = types.InlineKeyboardMarkup(row_width=2)
-    keyboard.insert(types.InlineKeyboardButton(text=f"▫️ Малая", callback_data=f"room Малая"))
-    keyboard.insert(types.InlineKeyboardButton(text=f"◽️ Модуль", callback_data=f"room Модуль"))
-    keyboard.insert(types.InlineKeyboardButton(text=f"◻️ Большая", callback_data=f"room Большая"))
+    if 'men' == floor:
+        keyboard.insert(types.InlineKeyboardButton(text=f"✔️Мужчина", callback_data=f"floor mencom"))
+
+    else:
+        keyboard.insert(types.InlineKeyboardButton(text=f"Мужчина", callback_data=f"floor men"))
+    if 'women' == floor:
+        keyboard.insert(types.InlineKeyboardButton(text=f"✔️Женщина", callback_data=f"floor womencom"))
+    else:
+        keyboard.insert(types.InlineKeyboardButton(text=f"Женщина", callback_data=f"floor women"))
+
+    if floor != '' and 'gotovo' not in floor:
+        floor = f"|{floor}"
+    keyboard.insert(types.InlineKeyboardButton(text=f"Готово", callback_data=f"floor gotovo" + floor))
     return keyboard
 
-async def get_time_in_room():
-    date_h = datetime.datetime.strptime('7:30', "%H:%M")
-    step = datetime.timedelta(minutes=30)
-    array_date = []
-    while date_h < datetime.datetime.strptime('19:30', "%H:%M"):
-        date_h += step
-        minute = date_h.minute
-        if len(str(date_h.minute)) == 1:
-            minute = '00'
-        hour = f"{date_h.hour}"
-        array_date.append(f"{hour}:{minute}")
-    keyboard = types.InlineKeyboardMarkup(row_width=5)
-
-    for d_i in array_date:
-        keyboard.insert(types.InlineKeyboardButton(text=f"{d_i}", callback_data=f"time_h {d_i}"))
-    return keyboard
-
-
-
-
-
-
-
-
-
-
-
-async def in_menu_start(users_id):
+async def in_menu_set_info_users():
     keyboard = types.InlineKeyboardMarkup(row_width=2)
-    keyboard.add(types.InlineKeyboardButton(text=f"🤖 Мои боты", callback_data=f"mybots {users_id}"),
-                 types.InlineKeyboardButton(text=f"➕ Добавить бота", callback_data=f"addbots {users_id}"))
-    if str(users_id) in ADMINS:
-        keyboard.add(types.InlineKeyboardButton(text=f"📢 Оповестить админов", callback_data=f"rupor"))
+    keyboard.insert(types.InlineKeyboardButton(text=f"Редактировать", callback_data=f"edit"))
+    keyboard.insert(types.InlineKeyboardButton(text=f"Отправить", callback_data=f"nice"))
     return keyboard
 
 
-async def in_menu_mybots(users_id):
-    get_db_telegram = BotDB()
+async def in_menu_set_date_prognos():
     keyboard = types.InlineKeyboardMarkup(row_width=2)
-
-    array_bots_users = get_db_telegram.get_all_bots_in_user(userid=users_id)
-    if array_bots_users:
-        for i in array_bots_users:
-            keyboard.insert(types.InlineKeyboardButton(text=f"{i['botname']}", callback_data=f"editbot {i['apitoken']}"))
-
-
-    keyboard.add(types.InlineKeyboardButton(text=f"🔙 Назад", callback_data=f"sback"))
-
-    return keyboard
-
-
-
-async def in_menu_back_and_send():
-    keyboard = types.InlineKeyboardMarkup(row_width=2)
-    keyboard.insert(types.InlineKeyboardButton(text=f"Назад 🔙", callback_data=f"sback"))
-    keyboard.insert(types.InlineKeyboardButton(text=f"🔜 Разослать", callback_data=f"go_send"))
-    return keyboard
-
-async def in_menu_mybots_edit(users_id, apitoken):
-    get_db_telegram = BotDB()
-    keyboard = types.InlineKeyboardMarkup(row_width=2)
-
-    array_bot_user = get_db_telegram.get_bot_in_api_token(apitoken=apitoken)
-
-    keyboard.insert(types.InlineKeyboardButton(text=f"💢 Удалить", callback_data=f"deletbot {array_bot_user['apitoken']}"))
-
-
-    keyboard.insert(types.InlineKeyboardButton(text=f"🔙 Назад", callback_data=f"mybots {users_id}"))
-
+    keyboard.insert(types.InlineKeyboardButton(text=f"Сегодня", callback_data=f"dproc today"))
+    keyboard.insert(types.InlineKeyboardButton(text=f"Завтра", callback_data=f"dproc tomorrow"))
+    keyboard.insert(types.InlineKeyboardButton(text=f"На неделю", callback_data=f"dproc week"))
+    keyboard.insert(types.InlineKeyboardButton(text=f"На месяц", callback_data=f"dproc month"))
+    keyboard.insert(types.InlineKeyboardButton(text=f"Присылать ежедневно", callback_data=f"dproc still"))
+    keyboard.insert(types.InlineKeyboardButton(text=f"Выбрать дату", callback_data=f"dproc get"))
     return keyboard

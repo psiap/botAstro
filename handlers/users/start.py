@@ -8,7 +8,7 @@ from aiogram.types import InputFile
 
 from data.captcha import Captcha
 from keyboards.default import menu_start
-from keyboards.inline.in_menu import in_menu_start, in_menu_back
+from keyboards.inline.in_menu import in_menu_back
 from loader import dp, bot
 from utils.db_api.db import BotDB
 
