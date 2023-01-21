@@ -1,4 +1,5 @@
 import datetime
+import time
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
@@ -7,7 +8,7 @@ from aiogram.types import InputFile
 
 from data.captcha import Captcha
 from keyboards.default import menu_start
-from keyboards.inline.in_menu import in_menu_start
+from keyboards.inline.in_menu import in_menu_start, in_menu_back
 from loader import dp, bot
 from utils.db_api.db import BotDB
 
@@ -38,7 +39,14 @@ async def start(message: types.Message, state: FSMContext):
 
     await state.finish()
     photo = InputFile("data/1.jpg")
-    await bot.send_photo(chat_id=message.from_user.id, photo=photo,caption="<b>Добро пожаловать!</b>\n\n"
-                         "Вы можете забронировать время в переговорной комнате в любое свободное время 😊\n\n"
-                         "Забронировать переговорную комнату - <b>📁 Забронировать</b>\n\n"
-                         "Посмотреть на Вашу или другую бронь - <b>📅  Календарь</b>",reply_markup=menu_start)
+    msg = await bot.send_photo(chat_id=message.from_user.id, photo=photo,caption="<b>Добро пожаловать!</b>\n\n"
+                         "<b>Астроло́гия</b> — группа описательных и предсказательных практик, традиций и "
+                                                                           "верований, постулирующи"
+                                                                           "х воздействие небесных тел"
+                                                                           " на земной мир и человека\n\n",
+                         reply_markup=menu_start)
+
+
+       # caption=message.caption,
+    #    reply_markup=await in_menu_back(),
+   # )
