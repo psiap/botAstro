@@ -9,29 +9,24 @@ from loader import dp, bot, PAYMENTS_PROVIDER_TOKEN
 from utils.db_api.db import BotDB
 
 
-@dp.message_handler(text='🌟 Подписка', state='*')
-async def buy_subs_users(message: types.Message, state: FSMContext):
-    await state.finish()
-    await message.answer('Выберите на сколько',reply_markup=buy_subs)
 
-@dp.message_handler(text=['1 месяц', '3 месяца', '6 месяцев', '1 год'],state='*')
+@dp.message_handler(text=['1 месяц другу', '3 месяца другу', '6 месяцев другу', '1 год другу'],state='*')
 async def add_balance_incek(message: types.Message, state: FSMContext):
     __userid = message.from_user.id
     __message_text_user = message.text
-    if __message_text_user == '1 месяц':
+    if __message_text_user == '1 месяц другу':
         __summ_add = 250
-    elif __message_text_user == '3 месяца':
+    elif __message_text_user == '3 месяца другу':
         __summ_add = 750
-    elif __message_text_user == '6 месяцев':
+    elif __message_text_user == '6 месяцев другу':
         __summ_add = 1500
-    elif __message_text_user == '1 год':
+    elif __message_text_user == '1 год другу':
         __summ_add = 3000
     else:
         await message.answer(f"Повторите попытку",
                              reply_markup=menu_personal_area)
-        await state.set_state('personal')
         return
-    await state.set_state('by_subs')
+    await state.set_state('bs_frend')
     __summ_add = __summ_add * 100
     PRICE = types.LabeledPrice(label='Подписка', amount=__summ_add)
     await bot.send_invoice(message.chat.id, title='Оформление подписки',
@@ -48,14 +43,12 @@ async def add_balance_incek(message: types.Message, state: FSMContext):
                            payload='HAPPY FRIDAYS COUPON')
 
 
-
-
-@dp.pre_checkout_query_handler(lambda query: True,state='by_subs')
+@dp.pre_checkout_query_handler(lambda query: True,state='bs_frend')
 async def process_pre_checkout_query(pre_checkout_query: types.PreCheckoutQuery):
     await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
 
 
-@dp.pre_checkout_query_handler(lambda query: True, state='by_subs')
+@dp.pre_checkout_query_handler(lambda query: True, state='bs_frend')
 async def checkout(pre_checkout_query: types.PreCheckoutQuery):
     await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True,
                                         error_message="Aliens tried to steal your card's CVV,"
@@ -63,30 +56,28 @@ async def checkout(pre_checkout_query: types.PreCheckoutQuery):
                                                       " try to pay again in a few minutes, we need a small rest.")
 
 
-@dp.message_handler(content_types=ContentTypes.SUCCESSFUL_PAYMENT,state='by_subs')
+@dp.message_handler(content_types=ContentTypes.SUCCESSFUL_PAYMENT,state='bs_frend')
 async def got_payment(message: types.Message, state: FSMContext):
     __userid = message.chat.id
     add_balance = int(message.successful_payment.total_amount / 100)
 
 
     if add_balance == 250:
-        datenowtilda = datetime.timedelta(days=31)
+        datenowtilda = 31
     elif add_balance == 750:
-        datenowtilda = datetime.timedelta(days=92)
+        datenowtilda = 92
     elif add_balance == 1500:
-        datenowtilda = datetime.timedelta(days=180)
+        datenowtilda = 180
     elif add_balance == 3000:
-        datenowtilda = datetime.timedelta(days=365)
+        datenowtilda = 365
     else:
-        datenowtilda = datetime.timedelta(days=1)
+        datenowtilda = 1
 
-    date_now = datetime.datetime.now() + datenowtilda
     get_db_telegram = BotDB()
-    get_db_telegram.add_subs_users(__userid, date_now)
 
     date_tranz = datetime.datetime.now()
     get_db_telegram.add_tranz_users(__userid,add_balance,date_tranz)
-
-    await message.answer(f"Подписка оплачена {add_balance}, действует до {date_now}")
+    get_db_telegram.add_frend_subs(userid=message.from_user.id,daysubs=datenowtilda)
+    await message.answer(f"Вы купили подписку другу просто перешлите, сообщение ниже вашему другу, и она автоматически появиться")
+    await message.answer(f"https://t.me/astrologykbot?start={message.from_user.id}")
     await state.finish()
-

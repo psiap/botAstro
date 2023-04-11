@@ -4,14 +4,67 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemo
 menu_start = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text="Оплатить подписку"),
-            KeyboardButton(text="Получить прогноз"),
+            KeyboardButton(text="Данные рождения"),
+            KeyboardButton(text="🌟 Подписка"),
+            KeyboardButton(text="🔮 Прогноз"),
         ],
         [
-            KeyboardButton(text="Узнать больше про бота"),
+            KeyboardButton(text="📜 Карта дня"),
+            KeyboardButton(text="💫 Сны"),
+            KeyboardButton(text="🤔 О боте"),
+        ],
+        [
+            KeyboardButton(text="🌓 Общий прогноз на месяц"),
+        ],
+        [
+            KeyboardButton(text="🪄 Подарить другу"),
+            KeyboardButton(text="🚀 Смена города"),
         ],
     ],
     resize_keyboard=True
 )
 
 
+buy_subs = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text='1 месяц'),
+            KeyboardButton(text='3 месяца'),
+            KeyboardButton(text='6 месяцев'),
+        ],
+        [
+            KeyboardButton(text='1 год'),
+        ],
+        [
+            KeyboardButton(text='Вернуться в главное меню'),
+        ],
+    ],
+    resize_keyboard=True
+)
+
+buy_subs_frend = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text='1 месяц другу'),
+            KeyboardButton(text='3 месяца другу'),
+
+        ],
+        [
+            KeyboardButton(text='6 месяцев другу'),
+            KeyboardButton(text='1 год другу'),
+        ],
+        [
+            KeyboardButton(text='Вернуться в главное меню'),
+        ],
+    ],
+    resize_keyboard=True
+)
+
+menu_personal_area = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text='Вернуться в главное меню'),
+        ],
+    ],
+    resize_keyboard=True
+)
