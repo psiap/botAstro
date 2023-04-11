@@ -15,13 +15,13 @@ async def add_balance_incek(message: types.Message, state: FSMContext):
     __userid = message.from_user.id
     __message_text_user = message.text
     if __message_text_user == '1 месяц другу':
-        __summ_add = 250
+        __summ_add = 300
     elif __message_text_user == '3 месяца другу':
-        __summ_add = 750
+        __summ_add = 800
     elif __message_text_user == '6 месяцев другу':
         __summ_add = 1500
     elif __message_text_user == '1 год другу':
-        __summ_add = 3000
+        __summ_add = 2900
     else:
         await message.answer(f"Повторите попытку",
                              reply_markup=menu_personal_area)
@@ -62,13 +62,13 @@ async def got_payment(message: types.Message, state: FSMContext):
     add_balance = int(message.successful_payment.total_amount / 100)
 
 
-    if add_balance == 250:
+    if add_balance == 300:
         datenowtilda = 31
-    elif add_balance == 750:
+    elif add_balance == 800:
         datenowtilda = 92
     elif add_balance == 1500:
         datenowtilda = 180
-    elif add_balance == 3000:
+    elif add_balance == 2900:
         datenowtilda = 365
     else:
         datenowtilda = 1

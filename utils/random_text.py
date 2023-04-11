@@ -121,12 +121,13 @@ def user_prog(answer_user,user_id):
                                           year_last=year_last, month_last=month_last, day_last=day_last,
                                           hour_last="20", minute_last=minute_last)
         users_info = f'🧙 Прогноз на сегодня ({datetime.datetime.now().strftime("%Y.%m.%d")})\n\n ' \
-                     f'Промежуток (8:00-13:00):\n' \
                      f'{reslut_one[0]}\n\n' \
-                     f'Промежуток (14:00-17:00):\n' \
+                     f'{reslut_one[1]}\n\n' \
                      f'{reslut_two[1]}\n\n' \
-                     f'Промежуток (18:00-20:00):\n' \
-                     f'{reslut_three[2]}\n\n'
+                     f'{reslut_two[2]}\n\n' \
+                     f'{reslut_three[2]}\n\n' \
+                     f'{reslut_three[3]}\n\n'
+
     elif answer_user == 'tomorrow':
         prog_str = datetime.datetime.now() + datetime.timedelta(days=1)
         time_last = prog_str.strftime("%Y.%m.%d %H:%M").split(' ')
@@ -153,12 +154,12 @@ def user_prog(answer_user,user_id):
                                             year_last=year_last, month_last=month_last, day_last=day_last,
                                             hour_last="20", minute_last=minute_last)
         users_info = f'🧙 Прогноз на завтра ({prog_str.strftime("%Y-%m-%d") })\n\n ' \
-                      f'Промежуток (8:00-13:00):\n' \
-                     f'{reslut_one[0]}\n\n' \
-                     f'Промежуток (14:00-17:00):\n' \
+                      f'{reslut_one[0]}\n\n' \
+                     f'{reslut_one[1]}\n\n' \
                      f'{reslut_two[1]}\n\n' \
-                     f'Промежуток (18:00-20:00):\n' \
-                     f'{reslut_three[2]}\n\n'
+                     f'{reslut_two[2]}\n\n' \
+                     f'{reslut_three[2]}\n\n' \
+                     f'{reslut_three[3]}\n\n'
     elif answer_user == 'week':
         prog_today = datetime.datetime.now().strftime("%Y-%m-%d")
         prog_str = datetime.datetime.now() + datetime.timedelta(days=7)
@@ -218,12 +219,12 @@ def user_prog(answer_user,user_id):
                                             year_last=year_last, month_last=month_last, day_last=day_last,
                                             hour_last="20", minute_last=minute_last)
         users_info = f'🧙 Прогноз на сегодня ({datetime.datetime.now().strftime("%Y.%m.%d")})\n\n ' \
-                     f'Промежуток (8:00-13:00):\n' \
                      f'{reslut_one[0]}\n\n' \
-                     f'Промежуток (14:00-17:00):\n' \
+                     f'{reslut_one[1]}\n\n' \
                      f'{reslut_two[1]}\n\n' \
-                     f'Промежуток (18:00-20:00):\n' \
-                     f'{reslut_three[2]}\n\n'\
+                     f'{reslut_two[2]}\n\n' \
+                     f'{reslut_three[2]}\n\n' \
+                     f'{reslut_three[3]}\n\n' \
                      f'Следующий прогноз будет завтра в 10:00'
     else:
         try:
@@ -265,19 +266,27 @@ def user_prog(answer_user,user_id):
     return users_info
 
 
-def get_img():
+def get_img(date_now=None):
     from PIL import Image, ImageDraw, ImageFont
 
     im = Image.open('БОРДОВАЯ КАРТИНКА.jpg')
-
-    draw_text = ImageDraw.Draw(im)
-    font = ImageFont.truetype("Comic Sans MS.ttf", 80)
-    draw_text.text(
-        (370, 450),
-        datetime.datetime.now().strftime("%d-%m-%Y"),
-        fill=('#ffffff'),
-        font=font,
-    )
-
+    if date_now == None:
+        draw_text = ImageDraw.Draw(im)
+        font = ImageFont.truetype("Comic Sans MS.ttf", 80)
+        draw_text.text(
+            (370, 450),
+            datetime.datetime.now().strftime("%d-%m-%Y"),
+            fill=('#ffffff'),
+            font=font,
+        )
+    else:
+        draw_text = ImageDraw.Draw(im)
+        font = ImageFont.truetype("Comic Sans MS.ttf", 80)
+        draw_text.text(
+            (370, 450),
+            date_now,
+            fill=('#ffffff'),
+            font=font,
+        )
     im.save('БОРДОВАЯ КАРТИНКА2.jpg')
     return 'БОРДОВАЯ КАРТИНКА2.jpg'

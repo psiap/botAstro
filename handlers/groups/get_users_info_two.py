@@ -12,7 +12,7 @@ from keyboards.default import menu_start
 from keyboards.inline.in_menu import in_menu_back, in_menu_get_floor, in_menu_set_info_users, in_menu_set_date_prognos
 from loader import dp, bot, PAYMENTS_PROVIDER_TOKEN
 from utils.db_api.db import BotDB
-from utils.random_text import user_prog
+from utils.random_text import user_prog, get_img
 
 
 @dp.callback_query_handler(lambda c: c.data.startswith('nice'), state='start_get_info_users_6')
@@ -84,7 +84,17 @@ async def buy_subs_users(call: CallbackQuery, state: FSMContext):
                                             time_of_birth=data["date_hour"],city_now=data["country_two"],
                                             when_forecast=data["when_forecast"])
         get_db_telegram.edit_forecast_users(call.from_user.id, answer_user)
-        await call.message.edit_text(text=user_prog(answer_user, call.from_user.id))
+        if answer_user == 'today':
+            date_now = datetime.datetime.now().strftime("%Y.%m.%d %H:%M").split(' ')[0]
+        elif answer_user == 'tomorrow':
+            prog_str = datetime.datetime.now() + datetime.timedelta(days=1)
+            date_now = prog_str.strftime("%Y.%m.%d %H:%M").split(' ')[0]
+        else:
+            date_now = datetime.datetime.now().strftime("%d-%m-%Y")
+        photo = InputFile(get_img(date_now=date_now))
+        await bot.send_photo(call.from_user.id, photo=photo)
+        await bot.send_message(call.from_user.id, text=user_prog(answer_user, call.from_user.id))
+        #await call.message.edit_text(text=user_prog(answer_user, call.from_user.id))
         await state.finish()
 #@dp.message_handler(state='start_get_8')
 #async def buy_subs_users(message: types.Message, state: FSMContext):

@@ -1,13 +1,14 @@
+import datetime
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, InputFile
 
 from handlers.groups.get_users_info_two import validate
 from keyboards.inline.in_menu import in_menu_set_date_prognos_forecast
-from loader import dp
+from loader import dp, bot
 from utils.db_api.db import BotDB
-from utils.random_text import user_prog
+from utils.random_text import user_prog, get_img
 
 
 @dp.message_handler(text=['🔮 Прогноз'],state='*')
@@ -27,7 +28,17 @@ async def buy_subs_users(call: CallbackQuery, state: FSMContext):
             await call.message.edit_text(text="📅 Укажите дату формате 01.01.2023")
             await state.set_state('start_forecast_two_users')
         else:
-            await call.message.edit_text(text=user_prog(answer_user,call.from_user.id))
+            if answer_user == 'today':
+                date_now = datetime.datetime.now().strftime("%Y.%m.%d %H:%M").split(' ')[0]
+            elif answer_user == 'tomorrow':
+                prog_str = datetime.datetime.now() + datetime.timedelta(days=1)
+                date_now = prog_str.strftime("%Y.%m.%d %H:%M").split(' ')[0]
+            else:
+                date_now = datetime.datetime.now().strftime("%d-%m-%Y")
+            photo = InputFile(get_img(date_now=date_now))
+            await bot.send_photo(call.from_user.id, photo=photo)
+            await bot.send_message(call.from_user.id, text=user_prog(answer_user,call.from_user.id))
+            #await call.message.edit_text(text=user_prog(answer_user,call.from_user.id))
             get_db_telegram = BotDB()
             get_db_telegram.edit_forecast_users(call.from_user.id, answer_user)
             await state.finish()

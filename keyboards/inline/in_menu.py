@@ -61,3 +61,9 @@ async def in_menu_set_info_users_time_created():
     keyboard.insert(types.InlineKeyboardButton(text=f"🌑 Ночь", callback_data=f"createdtime 3:00"))
     keyboard.insert(types.InlineKeyboardButton(text=f"🌚 Не знаю", callback_data=f"createdtime 12:00"))
     return keyboard
+
+async def in_menu_set_date_prognos_channel():
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.insert(types.InlineKeyboardButton(text=f"На неделю", callback_data=f"pich week"))
+    keyboard.insert(types.InlineKeyboardButton(text=f"На месяц", callback_data=f"pich month"))
+    return keyboard

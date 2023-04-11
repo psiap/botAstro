@@ -19,7 +19,7 @@ async def my_function():
 async def scheduler_start():
     while True:
         now = datetime.now().time()
-        run_time = time(hour=10, minute=0, second=0)
+        run_time = time(hour=8, minute=0, second=0)
         if now >= run_time:
             await my_function()
             await asyncio.sleep(86400)  # Повтор каждые 24 часа 86400

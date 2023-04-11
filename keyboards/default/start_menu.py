@@ -14,11 +14,14 @@ menu_start = ReplyKeyboardMarkup(
             KeyboardButton(text="🤔 О боте"),
         ],
         [
-            KeyboardButton(text="🌓 Общий прогноз на месяц"),
+            KeyboardButton(text="🌓 Общий прогноз"),
         ],
         [
             KeyboardButton(text="🪄 Подарить другу"),
             KeyboardButton(text="🚀 Смена города"),
+        ],
+        [
+            KeyboardButton(text="❓ Поддержка"),
         ],
     ],
     resize_keyboard=True
