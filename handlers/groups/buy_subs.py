@@ -12,7 +12,7 @@ from utils.db_api.db import BotDB
 @dp.message_handler(text='🌟 Подписка', state='*')
 async def buy_subs_users(message: types.Message, state: FSMContext):
     await state.finish()
-    await message.answer('Выберите на сколько',reply_markup=buy_subs)
+    await message.answer('Выберите длительность оплачиваемого периода',reply_markup=buy_subs)
 
 @dp.message_handler(text=['1 месяц', '3 месяца', '6 месяцев', '1 год'],state='*')
 async def add_balance_incek(message: types.Message, state: FSMContext):

@@ -121,12 +121,12 @@ def user_prog(answer_user,user_id):
                                           year_last=year_last, month_last=month_last, day_last=day_last,
                                           hour_last="20", minute_last=minute_last)
         users_info = f'🧙 Прогноз на сегодня ({datetime.datetime.now().strftime("%Y.%m.%d")})\n\n ' \
-                     f'{reslut_one[0]}\n\n' \
-                     f'{reslut_one[1]}\n\n' \
-                     f'{reslut_two[1]}\n\n' \
-                     f'{reslut_two[2]}\n\n' \
-                     f'{reslut_three[2]}\n\n' \
-                     f'{reslut_three[3]}\n\n'
+                     f'Интервал времени (8:00-13:00):\n' \
+                         f'{reslut_one[0]}\n\n' \
+                         f'Интервал времени (14:00-17:00):\n' \
+                         f'{reslut_two[1]}\n\n' \
+                         f'Интервал времени (18:00-20:00):\n' \
+                         f'{reslut_three[2]}\n\n'
 
     elif answer_user == 'tomorrow':
         prog_str = datetime.datetime.now() + datetime.timedelta(days=1)
@@ -154,12 +154,13 @@ def user_prog(answer_user,user_id):
                                             year_last=year_last, month_last=month_last, day_last=day_last,
                                             hour_last="20", minute_last=minute_last)
         users_info = f'🧙 Прогноз на завтра ({prog_str.strftime("%Y-%m-%d") })\n\n ' \
-                      f'{reslut_one[0]}\n\n' \
-                     f'{reslut_one[1]}\n\n' \
-                     f'{reslut_two[1]}\n\n' \
-                     f'{reslut_two[2]}\n\n' \
-                     f'{reslut_three[2]}\n\n' \
-                     f'{reslut_three[3]}\n\n'
+                      f'Интервал времени (8:00-13:00):\n' \
+                         f'{reslut_one[0]}\n\n' \
+                         f'Интервал времени (14:00-17:00):\n' \
+                         f'{reslut_two[1]}\n\n' \
+                         f'Интервал времени (18:00-20:00):\n' \
+                         f'{reslut_three[2]}\n\n'
+
     elif answer_user == 'week':
         prog_today = datetime.datetime.now().strftime("%Y-%m-%d")
         prog_str = datetime.datetime.now() + datetime.timedelta(days=7)
@@ -219,12 +220,12 @@ def user_prog(answer_user,user_id):
                                             year_last=year_last, month_last=month_last, day_last=day_last,
                                             hour_last="20", minute_last=minute_last)
         users_info = f'🧙 Прогноз на сегодня ({datetime.datetime.now().strftime("%Y.%m.%d")})\n\n ' \
-                     f'{reslut_one[0]}\n\n' \
-                     f'{reslut_one[1]}\n\n' \
-                     f'{reslut_two[1]}\n\n' \
-                     f'{reslut_two[2]}\n\n' \
-                     f'{reslut_three[2]}\n\n' \
-                     f'{reslut_three[3]}\n\n' \
+                     f'Интервал времени (8:00-13:00):\n' \
+                         f'{reslut_one[0]}\n\n' \
+                         f'Интервал времени (14:00-17:00):\n' \
+                         f'{reslut_two[1]}\n\n' \
+                         f'Интервал времени (18:00-20:00):\n' \
+                         f'{reslut_three[2]}\n\n' \
                      f'Следующий прогноз будет завтра в 10:00'
     else:
         try:
@@ -254,12 +255,12 @@ def user_prog(answer_user,user_id):
                                                 year_last=year_last, month_last=month_last, day_last=day_last,
                                                 hour_last="20", minute_last=minute_last)
             users_info = f'🧙 Прогноз на ({answer_user})\n\n ' \
-                          f'Промежуток (8:00-13:00):\n' \
-                     f'{reslut_one[0]}\n\n' \
-                     f'Промежуток (14:00-17:00):\n' \
-                     f'{reslut_two[1]}\n\n' \
-                     f'Промежуток (18:00-20:00):\n' \
-                     f'{reslut_three[2]}\n\n'
+                          f'Интервал времени (8:00-13:00):\n' \
+                         f'{reslut_one[0]}\n\n' \
+                         f'Интервал времени (14:00-17:00):\n' \
+                         f'{reslut_two[1]}\n\n' \
+                         f'Интервал времени (18:00-20:00):\n' \
+                         f'{reslut_three[2]}\n\n'
         except:
             users_info = f'🧙 Прогноз не получился повторите попытку'
 

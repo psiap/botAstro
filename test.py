@@ -56,6 +56,8 @@ def get_planets_in_users(name_users,year_users,month_users,day_users,hours_user,
 
         try:
             result = get_radius_in_planet(planets_i['p1_name'], planets_i['p2_name'], str(planets_i['aspect_degrees']))
+
+            print(planets_i['p1_name'],planets_i['p2_name'],planets_i['aspect_degrees'],int(planets_i['diff']))
         except:
             result = 'None'
         if result == 'None':
@@ -64,4 +66,4 @@ def get_planets_in_users(name_users,year_users,month_users,day_users,hours_user,
         array_user.append(result)
     return array_user
 get_planets_in_users(name_users='Maria',year_users="1979",month_users="11",day_users="15",hours_user="5",minuts_users="15",lng_users="48.023",lat_users="37.8022",
-                     lng_last="48.023",lat_last="37.8022",year_last="2023",month_last="2",day_last="14",hour_last="5",minute_last="55")
+                     lng_last="48.023",lat_last="37.8022",year_last="2023",month_last="4",day_last="12",hour_last="12",minute_last="18")
