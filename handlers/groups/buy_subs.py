@@ -12,7 +12,7 @@ from utils.db_api.db import BotDB
 @dp.message_handler(text='🌟 Подписка', state='*')
 async def buy_subs_users(message: types.Message, state: FSMContext):
     await state.finish()
-    await message.answer('Выберите длительность оплачиваемого периода',reply_markup=buy_subs)
+    await message.answer('Выберите длительность оплачиваемого периода⏱',reply_markup=buy_subs)
 
 @dp.message_handler(text=['1 месяц', '3 месяца', '6 месяцев', '1 год'],state='*')
 async def add_balance_incek(message: types.Message, state: FSMContext):
@@ -35,7 +35,7 @@ async def add_balance_incek(message: types.Message, state: FSMContext):
     __summ_add = __summ_add * 100
     PRICE = types.LabeledPrice(label='Подписка', amount=__summ_add)
     await bot.send_invoice(message.chat.id, title='Оформление подписки',
-                           description='Это твоя лучшая инвестиция',
+                           description='Это Ваша лучшая инвестиция 👌',
                            provider_token=PAYMENTS_PROVIDER_TOKEN,
                            currency='rub',
                            photo_url='https://www.simplybuzzes.com/wp-content/uploads/2020/02/numerology-1-1080x600.jpg',
@@ -87,6 +87,6 @@ async def got_payment(message: types.Message, state: FSMContext):
     date_tranz = datetime.datetime.now()
     get_db_telegram.add_tranz_users(__userid,add_balance,date_tranz)
 
-    await message.answer(f"Подписка оплачена {add_balance}, действует до {date_now}")
+    await message.answer(f"Спасибо за покупку! ⌛ <b>Подписка активна</b> и действует до  {date_now}")
     await state.finish()
 

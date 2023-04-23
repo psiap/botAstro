@@ -11,4 +11,4 @@ from loader import dp
 @dp.message_handler(text='🪄 Подарить другу',state='*')
 async def start(message: types.Message, state: FSMContext):
     await state.finish()
-    await message.answer('Выберите на сколько', reply_markup=buy_subs_frend)
+    await message.answer('Выберите длительность оплачиваемого периода⏱', reply_markup=buy_subs_frend)

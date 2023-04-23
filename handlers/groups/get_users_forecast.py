@@ -13,7 +13,7 @@ from utils.random_text import user_prog, get_img
 
 @dp.message_handler(text=['🔮 Прогноз'],state='*')
 async def start(message: types.Message, state: FSMContext):
-    await message.answer("""Просто напиши мне, какой период тебя интересует, и я подготовлю для тебя подробный гороскоп. 📝
+    await message.answer("""Выберите, какой период Вас интересует, и я подготовлю для Вас персональные рекомендации📋
     """,
                          reply_markup=await in_menu_set_date_prognos_forecast())
 #dforproc
@@ -30,12 +30,15 @@ async def buy_subs_users(call: CallbackQuery, state: FSMContext):
         else:
             if answer_user == 'today':
                 date_now = datetime.datetime.now().strftime("%Y.%m.%d %H:%M").split(' ')[0]
+                day_photo = datetime.datetime.now().strftime("%d-%m-%Y")
             elif answer_user == 'tomorrow':
                 prog_str = datetime.datetime.now() + datetime.timedelta(days=1)
                 date_now = prog_str.strftime("%Y.%m.%d %H:%M").split(' ')[0]
+                day_photo = prog_str.strftime("%d-%m-%Y")
             else:
                 date_now = datetime.datetime.now().strftime("%d-%m-%Y")
-            photo = InputFile(get_img(date_now=date_now))
+                day_photo = datetime.datetime.now().strftime("%d-%m-%Y")
+            photo = InputFile(get_img(date_now=day_photo))
             await bot.send_photo(call.from_user.id, photo=photo)
             await bot.send_message(call.from_user.id, text=user_prog(answer_user,call.from_user.id))
             #await call.message.edit_text(text=user_prog(answer_user,call.from_user.id))

@@ -50,23 +50,109 @@ def get_radius_in_planet(p1_name,p2_name,aspect_degrees):
         return 'None'
     return result
 
-def get_planets_in_users(name_users,year_users,month_users,day_users,hours_user,minuts_users,lng_users,lat_users,
+
+def get_moon_in_days(name_users,year_users,month_users,day_users,hours_user,minuts_users,lng_users,lat_users,
                          lng_last,lat_last,year_last,month_last,day_last,hour_last,minute_last):
-    first = KrInstance(name_users, int(year_users), int(month_users), int(day_users), int(hours_user), int(minuts_users), lng=float(lng_users), lat=float(lat_users))
-    second = KrInstance(lng=float(lng_last), lat=float(lat_last), year=int(year_last), month=int(month_last), day=int(day_last), hour=int(hour_last), minute=int(minute_last))
-    array_user = []
+    first = KrInstance(name_users, int(year_users), int(month_users), int(day_users), int(hours_user),
+                       int(minuts_users), lng=float(lng_users), lat=float(lat_users))
+
+
+    all_moon_array = []
+    target_values = [0, 60, 120, 90, 180, 240, 270, 300]
+
+    for i in range(0,24):
+        for j in range(0,60):
+            second = KrInstance(lng=float(lng_last), lat=float(lat_last), year=int(year_last), month=int(month_last),
+                                day=int(day_last), hour=i, minute=j)
+
+            name = CompositeAspects(first, second)
+            numbers = []
+            aspect_list = name.get_relevant_aspects()
+            for planets_i in aspect_list:
+                if 'Moon' in planets_i['p2_name']:
+                    if 'House' in planets_i['p2_name'] or 'House' in planets_i['p1_name']:
+                        continue
+                    #print([planets_i['p2_name'], planets_i['p1_name'], planets_i['diff'], i, planets_i['aspect_degrees']])
+                    for n in target_values:
+                        if planets_i['diff'] < n + 0.1 and planets_i['diff'] > n - 0.1:
+                            numbers.append([planets_i['p2_name'],planets_i['p1_name'],planets_i['diff'],i, planets_i['aspect_degrees']])
+
+            try:
+                closest_number = min(numbers, key=lambda x: min(abs(x[2] - target) for target in target_values))
+            except:
+                pass
+            try:
+                if all_moon_array[-1][1] == closest_number[1]:
+                    continue
+            except:
+                pass
+            try:
+                all_moon_array.append(closest_number)
+            except:
+                pass
+    return all_moon_array
+
+def get_all_planet_in_days(name_users,year_users,month_users,day_users,hours_user,minuts_users,lng_users,lat_users,
+                         lng_last,lat_last,year_last,month_last,day_last,hour_last,minute_last):
+    first = KrInstance(name_users, int(year_users), int(month_users), int(day_users), int(hours_user),
+                       int(minuts_users), lng=float(lng_users), lat=float(lat_users))
+    target_values = [0, 60, 120, 90, 180, 240, 270, 300]
+    second = KrInstance(lng=float(lng_last), lat=float(lat_last), year=int(year_last), month=int(month_last),
+                        day=int(day_last))
     name = CompositeAspects(first, second)
     aspect_list = name.get_relevant_aspects()
+    numbers = []
     for planets_i in aspect_list:
+        if 'Moon' != planets_i['p2_name']and planets_i['p2_name'] in ['Sun','Mercury', 'Venus','Mars']:
+            if 'House' in planets_i['p2_name'] or 'House' in planets_i['p1_name']:
+                continue
+            for n in target_values:
+                #print(f"{planets_i['diff']} < {n + 2} | {planets_i['diff']} > {n - 2} ")
+                if planets_i['diff'] < n + 0.1 and planets_i['diff'] > n - 0.1:
+                    numbers.append(
+                        [planets_i['p2_name'], planets_i['p1_name'], planets_i['diff'], planets_i['aspect_degrees']])
+
+                    break
+
+
+
+    #closest_number = min(numbers, key=lambda x: min(abs(x[2] - target) for target in target_values))
+    #print(closest_number)
+    return numbers
+
+def get_planets_in_users(name_users,year_users,month_users,day_users,hours_user,minuts_users,lng_users,lat_users,
+                         lng_last,lat_last,year_last,month_last,day_last,hour_last,minute_last):
+
+    #get_radius_in_planet(planets_i['p1_name'], planets_i['p2_name'], str(planets_i['aspect_degrees']))
+    all_moon_array = get_moon_in_days(name_users,year_users,month_users,day_users,hours_user,minuts_users,lng_users,lat_users,
+                         lng_last,lat_last,year_last,month_last,day_last,hour_last,minute_last)
+    all_planet_array = get_all_planet_in_days(name_users,year_users,month_users,day_users,hours_user,minuts_users,lng_users,lat_users,
+                         lng_last,lat_last,year_last,month_last,day_last,hour_last,minute_last)
+    print(all_planet_array)
+    print(all_moon_array)
+    return_string = ""
+    for i in all_planet_array:
         try:
-            result = get_radius_in_planet(planets_i['p1_name'], planets_i['p2_name'], str(planets_i['aspect_degrees']))
+            result = get_radius_in_planet(i[0], i[1], str(i[3]))
+            return_string += f"{result}\n\n"
         except:
-            result = 'None'
-        if result == 'None':
-            continue
-        #print(planets_i['p1_name'], planets_i['p2_name'], planets_i['aspect_degrees'])
-        array_user.append(result)
-    return array_user
+            pass
+    for i in all_moon_array:
+        try:
+            result = get_radius_in_planet(i[0], i[1], str(i[4]))
+
+            if i[3]+3 < 5:
+                continue
+            if i[4] in [60, 90]:
+                add_time = i[3]+3 + 2
+            else:
+                add_time = i[3]+3 + 3
+
+            #print(f"<b>{i[3]}:00 - {add_time}:00</b>{result}\n\n")
+            return_string += f"<b>{i[3]+3}:00 - {add_time}:00</b> {result}\n\n"
+        except Exception as E:
+            print(E)
+    return return_string
 
 
 
@@ -91,42 +177,20 @@ def user_prog(answer_user,user_id):
 
     city_now = user['city_now'].split(' ')
     lng_last, lat_last = city_now[0], city_now[1]
-    get_planets_in_users(name_users=user['name'], year_users=year_users, month_users=month_users, day_users=day_users, hours_user=hours_user,
-                         minuts_users=minuts_users, lng_users=lng_users, lat_users=lat_users,
-                         lng_last=lng_last, lat_last=lat_last,
-                         year_last="2023", month_last="2", day_last="14",
-                         hour_last="5", minute_last="55")
     if answer_user == 'today':
         time_last = datetime.datetime.now().strftime("%Y.%m.%d %H:%M").split(' ')
         days = time_last[0].split('.')
         year_last, month_last, day_last = days[0], days[1], days[2]
         ms = time_last[1].split(':')
         hour_last, minute_last = ms[0], ms[1]
-        reslut_one = get_planets_in_users(name_users=user['name'], year_users=year_users, month_users=month_users,
+        reslut = get_planets_in_users(name_users=user['name'], year_users=year_users, month_users=month_users,
                              day_users=day_users, hours_user=hours_user,
                              minuts_users=minuts_users, lng_users=lng_users, lat_users=lat_users,
                              lng_last=lng_last, lat_last=lat_last,
                              year_last=year_last, month_last=month_last, day_last=day_last,
                              hour_last="10", minute_last=minute_last)
-        reslut_two = get_planets_in_users(name_users=user['name'], year_users=year_users, month_users=month_users,
-                                          day_users=day_users, hours_user=hours_user,
-                                          minuts_users=minuts_users, lng_users=lng_users, lat_users=lat_users,
-                                          lng_last=lng_last, lat_last=lat_last,
-                                          year_last=year_last, month_last=month_last, day_last=day_last,
-                                          hour_last="13", minute_last=minute_last)
-        reslut_three = get_planets_in_users(name_users=user['name'], year_users=year_users, month_users=month_users,
-                                          day_users=day_users, hours_user=hours_user,
-                                          minuts_users=minuts_users, lng_users=lng_users, lat_users=lat_users,
-                                          lng_last=lng_last, lat_last=lat_last,
-                                          year_last=year_last, month_last=month_last, day_last=day_last,
-                                          hour_last="20", minute_last=minute_last)
-        users_info = f'🧙 Прогноз на сегодня ({datetime.datetime.now().strftime("%Y.%m.%d")})\n\n ' \
-                     f'Интервал времени (8:00-13:00):\n' \
-                         f'{reslut_one[0]}\n\n' \
-                         f'Интервал времени (14:00-17:00):\n' \
-                         f'{reslut_two[1]}\n\n' \
-                         f'Интервал времени (18:00-20:00):\n' \
-                         f'{reslut_three[2]}\n\n'
+
+        users_info = f'🧙 Прогноз на сегодня ({datetime.datetime.now().strftime("%Y.%m.%d")})\n\n {reslut}'
 
     elif answer_user == 'tomorrow':
         prog_str = datetime.datetime.now() + datetime.timedelta(days=1)
@@ -135,31 +199,13 @@ def user_prog(answer_user,user_id):
         year_last, month_last, day_last = days[0], days[1], days[2]
         ms = time_last[1].split(':')
         hour_last, minute_last = ms[0], ms[1]
-        reslut_one = get_planets_in_users(name_users=user['name'], year_users=year_users, month_users=month_users,
-                                          day_users=day_users, hours_user=hours_user,
-                                          minuts_users=minuts_users, lng_users=lng_users, lat_users=lat_users,
-                                          lng_last=lng_last, lat_last=lat_last,
-                                          year_last=year_last, month_last=month_last, day_last=day_last,
-                                          hour_last="10", minute_last=minute_last)
-        reslut_two = get_planets_in_users(name_users=user['name'], year_users=year_users, month_users=month_users,
-                                          day_users=day_users, hours_user=hours_user,
-                                          minuts_users=minuts_users, lng_users=lng_users, lat_users=lat_users,
-                                          lng_last=lng_last, lat_last=lat_last,
-                                          year_last=year_last, month_last=month_last, day_last=day_last,
-                                          hour_last="13", minute_last=minute_last)
-        reslut_three = get_planets_in_users(name_users=user['name'], year_users=year_users, month_users=month_users,
-                                            day_users=day_users, hours_user=hours_user,
-                                            minuts_users=minuts_users, lng_users=lng_users, lat_users=lat_users,
-                                            lng_last=lng_last, lat_last=lat_last,
-                                            year_last=year_last, month_last=month_last, day_last=day_last,
-                                            hour_last="20", minute_last=minute_last)
-        users_info = f'🧙 Прогноз на завтра ({prog_str.strftime("%Y-%m-%d") })\n\n ' \
-                      f'Интервал времени (8:00-13:00):\n' \
-                         f'{reslut_one[0]}\n\n' \
-                         f'Интервал времени (14:00-17:00):\n' \
-                         f'{reslut_two[1]}\n\n' \
-                         f'Интервал времени (18:00-20:00):\n' \
-                         f'{reslut_three[2]}\n\n'
+        reslut = get_planets_in_users(name_users=user['name'], year_users=year_users, month_users=month_users,
+                                      day_users=day_users, hours_user=hours_user,
+                                      minuts_users=minuts_users, lng_users=lng_users, lat_users=lat_users,
+                                      lng_last=lng_last, lat_last=lat_last,
+                                      year_last=year_last, month_last=month_last, day_last=day_last,
+                                      hour_last="10", minute_last=minute_last)
+        users_info = f'🧙 Прогноз на завтра ({prog_str.strftime("%Y-%m-%d") })\n\n {reslut}'
 
     elif answer_user == 'week':
         prog_today = datetime.datetime.now().strftime("%Y-%m-%d")
@@ -175,8 +221,8 @@ def user_prog(answer_user,user_id):
                                       minuts_users=minuts_users, lng_users=lng_users, lat_users=lat_users,
                                       lng_last=lng_last, lat_last=lat_last,
                                       year_last=year_last, month_last=month_last, day_last=day_last,
-                                      hour_last=hour_last, minute_last=minute_last)
-        users_info = f'🧙 Прогноз на неделю ({prog_today} - {prog_str.strftime("%Y-%m-%d") })\n\n {reslut[0]}'
+                                      hour_last="10", minute_last=minute_last)
+        users_info = f'🧙 Прогноз на неделю ({prog_today} - {prog_str.strftime("%Y-%m-%d") })\n\n {reslut}'
     elif answer_user == 'month':
         prog_today = datetime.datetime.now().strftime("%Y-%m-%d")
         prog_str = datetime.datetime.now() + datetime.timedelta(days=31)
@@ -191,8 +237,8 @@ def user_prog(answer_user,user_id):
                                       minuts_users=minuts_users, lng_users=lng_users, lat_users=lat_users,
                                       lng_last=lng_last, lat_last=lat_last,
                                       year_last=year_last, month_last=month_last, day_last=day_last,
-                                      hour_last=hour_last, minute_last=minute_last)
-        users_info = f'🧙 Прогноз на месяц ({prog_today} - {prog_str.strftime("%Y-%m-%d") })\n\n {reslut[0]}'
+                                      hour_last="10", minute_last=minute_last)
+        users_info = f'🧙 Прогноз на месяц ({prog_today} - {prog_str.strftime("%Y-%m-%d") })\n\n {reslut}'
     elif answer_user == 'still':
         prog_today = datetime.datetime.now().strftime("%Y-%m-%d")
         prog_str = datetime.datetime.now()
@@ -201,31 +247,13 @@ def user_prog(answer_user,user_id):
         year_last, month_last, day_last = days[0], days[1], days[2]
         ms = time_last[1].split(':')
         hour_last, minute_last = ms[0], ms[1]
-        reslut_one = get_planets_in_users(name_users=user['name'], year_users=year_users, month_users=month_users,
-                                          day_users=day_users, hours_user=hours_user,
-                                          minuts_users=minuts_users, lng_users=lng_users, lat_users=lat_users,
-                                          lng_last=lng_last, lat_last=lat_last,
-                                          year_last=year_last, month_last=month_last, day_last=day_last,
-                                          hour_last="10", minute_last=minute_last)
-        reslut_two = get_planets_in_users(name_users=user['name'], year_users=year_users, month_users=month_users,
-                                          day_users=day_users, hours_user=hours_user,
-                                          minuts_users=minuts_users, lng_users=lng_users, lat_users=lat_users,
-                                          lng_last=lng_last, lat_last=lat_last,
-                                          year_last=year_last, month_last=month_last, day_last=day_last,
-                                          hour_last="13", minute_last=minute_last)
-        reslut_three = get_planets_in_users(name_users=user['name'], year_users=year_users, month_users=month_users,
-                                            day_users=day_users, hours_user=hours_user,
-                                            minuts_users=minuts_users, lng_users=lng_users, lat_users=lat_users,
-                                            lng_last=lng_last, lat_last=lat_last,
-                                            year_last=year_last, month_last=month_last, day_last=day_last,
-                                            hour_last="20", minute_last=minute_last)
-        users_info = f'🧙 Прогноз на сегодня ({datetime.datetime.now().strftime("%Y.%m.%d")})\n\n ' \
-                     f'Интервал времени (8:00-13:00):\n' \
-                         f'{reslut_one[0]}\n\n' \
-                         f'Интервал времени (14:00-17:00):\n' \
-                         f'{reslut_two[1]}\n\n' \
-                         f'Интервал времени (18:00-20:00):\n' \
-                         f'{reslut_three[2]}\n\n' \
+        reslut = get_planets_in_users(name_users=user['name'], year_users=year_users, month_users=month_users,
+                                      day_users=day_users, hours_user=hours_user,
+                                      minuts_users=minuts_users, lng_users=lng_users, lat_users=lat_users,
+                                      lng_last=lng_last, lat_last=lat_last,
+                                      year_last=year_last, month_last=month_last, day_last=day_last,
+                                      hour_last="10", minute_last=minute_last)
+        users_info = f'🧙 Прогноз на сегодня ({datetime.datetime.now().strftime("%Y.%m.%d")})\n\n {reslut}' \
                      f'Следующий прогноз будет завтра в 10:00'
     else:
         try:
@@ -236,31 +264,13 @@ def user_prog(answer_user,user_id):
             year_last, month_last, day_last = days[2], days[1], days[0]
             ms = time_last[1].split(':')
             hour_last, minute_last = ms[0], ms[1]
-            reslut_one = get_planets_in_users(name_users=user['name'], year_users=year_users, month_users=month_users,
-                                              day_users=day_users, hours_user=hours_user,
-                                              minuts_users=minuts_users, lng_users=lng_users, lat_users=lat_users,
-                                              lng_last=lng_last, lat_last=lat_last,
-                                              year_last=year_last, month_last=month_last, day_last=day_last,
-                                              hour_last="10", minute_last=minute_last)
-            reslut_two = get_planets_in_users(name_users=user['name'], year_users=year_users, month_users=month_users,
-                                              day_users=day_users, hours_user=hours_user,
-                                              minuts_users=minuts_users, lng_users=lng_users, lat_users=lat_users,
-                                              lng_last=lng_last, lat_last=lat_last,
-                                              year_last=year_last, month_last=month_last, day_last=day_last,
-                                              hour_last="13", minute_last=minute_last)
-            reslut_three = get_planets_in_users(name_users=user['name'], year_users=year_users, month_users=month_users,
-                                                day_users=day_users, hours_user=hours_user,
-                                                minuts_users=minuts_users, lng_users=lng_users, lat_users=lat_users,
-                                                lng_last=lng_last, lat_last=lat_last,
-                                                year_last=year_last, month_last=month_last, day_last=day_last,
-                                                hour_last="20", minute_last=minute_last)
-            users_info = f'🧙 Прогноз на ({answer_user})\n\n ' \
-                          f'Интервал времени (8:00-13:00):\n' \
-                         f'{reslut_one[0]}\n\n' \
-                         f'Интервал времени (14:00-17:00):\n' \
-                         f'{reslut_two[1]}\n\n' \
-                         f'Интервал времени (18:00-20:00):\n' \
-                         f'{reslut_three[2]}\n\n'
+            reslut = get_planets_in_users(name_users=user['name'], year_users=year_users, month_users=month_users,
+                                          day_users=day_users, hours_user=hours_user,
+                                          minuts_users=minuts_users, lng_users=lng_users, lat_users=lat_users,
+                                          lng_last=lng_last, lat_last=lat_last,
+                                          year_last=year_last, month_last=month_last, day_last=day_last,
+                                          hour_last="10", minute_last=minute_last)
+            users_info = f'🧙 Прогноз на ({answer_user})\n\n{reslut}'
         except:
             users_info = f'🧙 Прогноз не получился повторите попытку'
 

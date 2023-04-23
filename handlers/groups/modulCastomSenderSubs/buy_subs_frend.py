@@ -30,7 +30,7 @@ async def add_balance_incek(message: types.Message, state: FSMContext):
     __summ_add = __summ_add * 100
     PRICE = types.LabeledPrice(label='Подписка', amount=__summ_add)
     await bot.send_invoice(message.chat.id, title='Оформление подписки',
-                           description='Это твоя лучшая инвестиция',
+                           description='Это Ваша лучшая инвестиция 👌',
                            provider_token=PAYMENTS_PROVIDER_TOKEN,
                            currency='rub',
                            photo_url='https://www.simplybuzzes.com/wp-content/uploads/2020/02/numerology-1-1080x600.jpg',

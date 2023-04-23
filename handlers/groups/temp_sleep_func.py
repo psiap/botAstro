@@ -26,7 +26,7 @@ async def start(message: types.Message, state: FSMContext):
 async def start(message: types.Message, state: FSMContext):
     await state.finish()
     kb = await in_menu_set_date_prognos_channel()
-    await message.answer('Выберите на когда',reply_markup=kb)
+    await message.answer('Выберите период ⌛',reply_markup=kb)
 
 
 @dp.callback_query_handler(lambda c: c.data.startswith('pich'))
